@@ -1,0 +1,152 @@
+// Clearfix mixin
+%clearfix {
+    *zoom: 1;
+    &:before, &:after {
+      content: " ";
+      display: table;
+    }
+    &:after {
+      clear: both;
+    }
+}
+  
+// usage
+// .container-with-floated-children {
+//     @extend %clearfix;
+// }
+
+// Font size mixin
+@function calculateRem($size) {
+    $remSize: $size / 14px;
+    @return $remSize * 1rem;
+}
+  
+@mixin font-size($size) {
+    font-size: $size;
+    font-size: calculateRem($size);
+}
+  
+//usage
+// p {
+//     @include font-size(14px)
+// }
+
+//padding mixin
+@mixin padding($top, $right, $bottom, $left) {
+    padding-top: $top;
+    padding-right: $right;
+    padding-bottom: $bottom;
+    padding-left: $left;
+}
+//margin mixin
+@mixin margin($top, $right, $bottom, $left) {
+    margin-top: $top;
+    margin-right: $right;
+    margin-bottom: $bottom;
+    margin-left: $left;
+}
+
+//usage definition
+@include padding(top, right, bottom, left);
+@include margin(top, right, bottom, left);
+//usage 1
+@include padding(1px, null, 3px, 4px);
+@include margin(1px, 2px, 3px, 4px);
+
+@mixin box($width, $height=$width) {
+    width: $width;
+    height: $height;
+}
+
+//usage
+//.square {
+//    @include box(50px);
+//}
+  
+//.rectangle {
+//   @include box(100px, 50px);
+//}
+
+@mixin position($position, $args) {
+    @each $o in top right bottom left {
+      $i: index($args, $o);
+      @if $i and $i + 1 <= length($args) and type-of(nth($args, $i + 1)) == number {
+        #{$o}: nth($args, $i + 1);
+      }
+    }
+    position: $position;
+}
+  
+@mixin absolute($args: '') {
+    @include position(absolute, $args);
+}
+  
+@mixin fixed($args: '') {
+    @include position(fixed, $args);
+}
+  
+@mixin relative($args: '') {
+    @include position(relative, $args);
+}
+
+//usage
+// div {
+//     @include absolute(top 100% left 0);
+// }
+
+// div {
+//     @include absolute(100px 100px auto auto);
+// }
+  
+// div {
+//     @include fixed(top 0 left 0);
+// }
+
+
+@mixin center-vertically {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    @include prefix(transform, translate(-50%, -50%), 'webkit' 'ms');
+}
+
+//usage
+// div {
+//   @include center-vertically;
+// }
+
+@mixin config-item-colors($prefix, $colors...) {
+    @each $i in $colors {
+        .#{$prefix}#{nth($i, 1)} {
+            color: nth($i, 2);
+        }
+    }
+}
+
+//usage
+// @include config-item-colors('item-',
+//     'active'   red,
+//     'inactive' black,
+// );
+///* compiled CSS */
+// .item-active {
+//     color: red;
+//}
+// .item-inactive {
+//     color: red;
+//}
+
+
+@mixin btn-theme {
+    background-color: red;
+    border-color: black;
+    color: white;
+    &:hover {
+        background-color: darkred;
+    }
+}
+
+//usage 
+// div {
+//     @include btn-theme;
+// }
